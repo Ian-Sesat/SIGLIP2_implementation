@@ -1,13 +1,12 @@
 """
 SigLIP2 Zero-Shot Evaluation
 =============================
-Zero-shot evaluation of SigLIP2 So400m on custom dataset.
+Zero-shot evaluation of SigLIP2 giant 384 on custom dataset.
 
 No training required — uses pretrained weights directly.
 
 Evaluates on:
 - Image Retrieval : mAP, Recall@1, Recall@5
-- Classification  : kNN@21
 """
 
 import os
@@ -27,15 +26,16 @@ from sklearn.model_selection import train_test_split
 from PIL import Image, ImageFile
 from tqdm import tqdm
 
-# ── CONFIG ─────────────────────────────────────────────
+# CONFIG 
 DATA_DIR  = '/media/isesat/e8188905-1ffc-4de1-83b6-ac2addc2a941'
 SAVE_DIR  = '/media/isesat/e8188905-1ffc-4de1-83b6-ac2addc2a941'
+os.environ['HF_HOME'] = '/home/isesat/Desktop/CLIP Project/SIGLIP'
 
 EMBEDDINGS = os.path.join(SAVE_DIR, 'embeddings_siglip2_zeroshot.npz')
 
 # Model
-MODEL_NAME    = 'google/siglip2-so400m-patch14-384'
-EMBEDDING_DIM = 1152
+MODEL_NAME    = 'google/siglip2-giant-opt-patch16-384'
+EMBEDDING_DIM = 1536
 
 # Dataset
 NUM_CLASSES    = 100
@@ -43,7 +43,7 @@ IMAGE_EXTS     = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".t
 IGNORE_FOLDERS = {'.Trash-1001', 'lost+found'}
 
 # Extraction
-EXTRACTION_BATCH_SIZE = 8  # small for 400M model safety
+EXTRACTION_BATCH_SIZE = 8  # small for 1B model safety
 
 # Run flags
 RUN_EXTRACTION = True
@@ -272,7 +272,7 @@ print(f"Model         : {MODEL_NAME}")
 print(f"Embedding dim : {EMBEDDING_DIM}")
 
 # Load SigLIP2
-print("\nLoading SigLIP2 So400m ...")
+print("\nLoading SigLIP2 Giant 384 ...")
 model     = AutoModel.from_pretrained(
                 MODEL_NAME,
                 device_map="auto"
@@ -291,7 +291,7 @@ print(f"Classes : {len(classes)}")
 
 if RUN_EXTRACTION:
     print("\n" + "="*60)
-    print("EXTRACTION — SigLIP2 So400m")
+    print("EXTRACTION — SigLIP2 Giant 384")
     print("="*60)
 
     torch.cuda.empty_cache()
@@ -339,8 +339,8 @@ if RUN_EVALUATION:
     recall_1  = evaluate_recall(test_embeddings, test_labels, index, train_labels, k=1)
     recall_5  = evaluate_recall(test_embeddings, test_labels, index, train_labels, k=5)
 
-    print("\n── kNN Classification ──")
-    knn_acc = knn_evaluation(test_embeddings, test_labels, index, train_labels, k=21)
+    #print("\n── kNN Classification ──")
+    #knn_acc = knn_evaluation(test_embeddings, test_labels, index, train_labels, k=21)
 
     print("\n" + "="*60)
     print("FINAL RESULTS — SigLIP2 So400m Zero-Shot")
@@ -350,6 +350,6 @@ if RUN_EVALUATION:
     print(f"{'mAP':<25} {map_score*100:>9.2f}%")
     print(f"{'Recall@1':<25} {recall_1*100:>9.2f}%")
     print(f"{'Recall@5':<25} {recall_5*100:>9.2f}%")
-    print(f"{'kNN Accuracy @21':<25} {knn_acc*100:>9.2f}%")
+    #print(f"{'kNN Accuracy @21':<25} {knn_acc*100:>9.2f}%")
     print("-" * 35)
     print("\n ALL DONE! ")
