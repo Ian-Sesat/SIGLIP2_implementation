@@ -23,7 +23,7 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 # CONFIG 
-DATA_DIR       = '/media/isesat/e8188905-1ffc-4de1-83b6-ac2addc2a941'
+DATA_DIR       = '/your/path/coco'
 MODEL_NAME     = 'google/siglip2-so400m-patch14-384'
 EMBEDDING_DIM  = 1152
 BATCH_SIZE     = 8     # smaller batch due to large model size (400M params)
@@ -31,7 +31,7 @@ IMAGE_EXTS     = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff", ".t
 IGNORE_FOLDERS = {'.Trash-1001', 'lost+found'}
 
 # Download model to local drive instead of home directory
-os.environ['HF_HOME'] = '/media/isesat/e8188905-1ffc-4de1-83b6-ac2addc2a941/hf_cache'
+os.environ['HF_HOME'] = '/your/path/coco/hf_cache'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
